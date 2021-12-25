@@ -1,2 +1,2 @@
 print('Hello GitHub!')
-print('test')
+print('hello git')
