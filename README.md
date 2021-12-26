@@ -1,5 +1,6 @@
 # ゼロから作るDeepLearning輪読会 in KV
 
+## ■概要
 * [ゼロから作るDeep Learning ―Pythonで学ぶディープラーニングの理論と実装](https://www.amazon.co.jp/dp/4873117585)の輪読会で使用するソースコード管理用のリポジトリです。
 * [サンプルコードのリポジトリ](https://github.com/oreilly-japan/deep-learning-from-scratch)をベースとして配置しています。変更点として`ch0X/`直下に配置してあったソースコード類を`ch0X/sample/`直下に移動しています。
 * 公開リポジトリのためアップロード内容にはくれぐれもご注意ください。
