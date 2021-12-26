@@ -1,1 +1,2 @@
-print("I'm hungry!")
+print('hello world')
+print('yazu test')
