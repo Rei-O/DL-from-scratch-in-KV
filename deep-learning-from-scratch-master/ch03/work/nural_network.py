@@ -70,7 +70,8 @@ print(f"y : {y}")
 
 # ソフトマックス関数
 def softmax(X):
-    exp_X = np.exp(X)
+    c = np.max(X)
+    exp_X = np.exp(X-c)
     sum_exp_X = np.sum(exp_X)
     return exp_X / sum_exp_X
 
@@ -87,7 +88,7 @@ def init_nuralnetwork():
 
     #==========第1層==========
     # 重み
-    network["W1"] = np.array([[0.2, 0.1, 0.5],[0.4, 0.2, 0.6]])
+    network["W1"] = np.array([[0.2, 0.1, 0.5],[0.4, 0.2,0.6]])
     # バイアス
     network["B1"] = np.array([0.2, 0.4, 0])
 
@@ -110,17 +111,18 @@ def forward(network, X):
     W1, W2, W3 = network["W1"], network["W2"], network["W3"]
     B1, B2, B3 = network["B1"], network["B2"], network["B3"]
 
+    def _forward(X, W, B):
+        return sigmoid(np.dot(X, W) + B)
+
     # 第1層
-    A1 = np.dot(X, W1) + B1
-    Z1 = sigmoid(A1)
+    Z1 = _forward(X, W1, B1)
 
     # 第2層
-    A2 = np.dot(Z1, W2) + B2
-    Z2 = sigmoid(A2)
+    Z2 = _forward(Z1, W2, B2)
 
     # 出力結果
-    A3 = np.dot(Z2, W3) + B3
-    y = sigmoid(A3)
+    Z3 = _forward(Z2, W3, B3)
+    y = softmax(Z3)
 
     return y
 
