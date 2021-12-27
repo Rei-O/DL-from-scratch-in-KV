@@ -1,8 +1,8 @@
 # coding: utf-8
 import sys, os
-sys.path.append(os.pardir)  # 親ディレクトリのファイルをインポートするための設定
+sys.path.append(os.path.join(os.path.join(os.path.dirname(__file__), '..'), '..'))  # 親ディレクトリの親ディレクトリのファイルをインポートするための設定
 import numpy as np
-from dataset.mnist import load_mnist
+from dataset.presentation.mnist import load_mnist
 from PIL import Image
 
 

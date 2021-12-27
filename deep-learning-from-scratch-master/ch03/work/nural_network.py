@@ -10,6 +10,7 @@ from numpy.core.shape_base import _atleast_1d_dispatcher, atleast_1d
 def sigmoid(x):
     return 1 / (1 + np.exp(-x))
 
+'''
 #==========第1層==========
 # 入力データ
 X = np.array([0.5, 0.2])
@@ -61,7 +62,7 @@ print(f"A3 : {A3}")
 
 y = sigmoid(A3)
 print(f"y : {y}")
-
+'''
 
 
 #================================
@@ -90,51 +91,53 @@ def init_nuralnetwork():
     # 重み
     network["W1"] = np.array([[0.2, 0.1, 0.5],[0.4, 0.2,0.6]])
     # バイアス
-    network["B1"] = np.array([0.2, 0.4, 0])
+    network["b1"] = np.array([0.2, 0.4, 0])
 
     #==========第2層===========
     # 重み
     network["W2"] = np.array([[0.3, 0.2], [0.2, 0.7], [1.0, 0.6]])
     # バイアス
-    network["B2"] = np.array([1.0, 0.2])
+    network["b2"] = np.array([1.0, 0.2])
 
     #==========出力層==========
     # 重み
     network["W3"] = np.array([[0.5, 0], [0.1, 0.7]])
     # バイアス
-    network["B3"] = np.array([1.0, 0.2])
+    network["b3"] = np.array([1.0, 0.2])
 
     return network
 
 # フォワード関数
 def forward(network, X):
     W1, W2, W3 = network["W1"], network["W2"], network["W3"]
-    B1, B2, B3 = network["B1"], network["B2"], network["B3"]
+    b1, b2, b3 = network["b1"], network["b2"], network["b3"]
 
     def _forward(X, W, B):
         return sigmoid(np.dot(X, W) + B)
 
     # 第1層
-    Z1 = _forward(X, W1, B1)
+    Z1 = _forward(X, W1, b1)
 
     # 第2層
-    Z2 = _forward(Z1, W2, B2)
+    Z2 = _forward(Z1, W2, b2)
 
     # 出力結果
-    Z3 = _forward(Z2, W3, B3)
+    Z3 = _forward(Z2, W3, b3)
     y = softmax(Z3)
 
     return y
 
-# 入力データ
-X = np.array([0.5, 0.2])
 
-# ニューラルネットワーク初期化
-network = init_nuralnetwork()
+if __name__ == '__main__':
+    # 入力データ
+    X = np.array([0.5, 0.2])
 
-# フォワード
-y = forward(network, X)
+    # ニューラルネットワーク初期化
+    network = init_nuralnetwork()
 
-print(y)
+    # フォワード
+    y = forward(network, X)
+
+    print(y)
 
 
