@@ -1,5 +1,5 @@
 import numpy as np
-from layer_naive import *
+from layers import *
 
 # 初期値
 apple = 100

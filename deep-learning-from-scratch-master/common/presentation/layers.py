@@ -1,7 +1,9 @@
 # coding: utf-8
+import sys, os
+sys.path.append(os.path.join(os.path.join(os.path.dirname(__file__), '..'), '..'))  # 親ディレクトリの親ディレクトリのファイルをインポートするための設定
 import numpy as np
-from common.functions import *
-from common.util import im2col, col2im
+from common.presentation.functions import *
+from common.presentation.util import im2col, col2im
 
 
 class Relu:
