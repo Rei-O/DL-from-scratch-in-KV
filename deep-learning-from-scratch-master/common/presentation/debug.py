@@ -1,5 +1,5 @@
 
-isDebugAll = True
+isDebugMode = True
 
 def debugprt(val, comment=None, isDebug=False):
     """
@@ -16,7 +16,7 @@ def debugprt(val, comment=None, isDebug=False):
         else:
             print(f"{comment} : {val}")
     
-    if isDebugAll: 
+    if isDebugMode: 
         _debugprt(val, comment)
     elif isDebug:
         _debugprt(val, comment)

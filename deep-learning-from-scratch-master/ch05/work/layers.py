@@ -155,7 +155,7 @@ class SoftmaxWithLoss:
         return dx
 
 if __name__ == '__main__':
-    debug.isDebugAll = False
+    debug.isDebugMode = False
 
     W = np.array([[1,2,3], [4,5,6]])
     b = np.array([0.1, 0.1, 0.3])
