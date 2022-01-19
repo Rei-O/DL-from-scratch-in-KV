@@ -107,19 +107,8 @@ def addVector(A, B):
     # ====================
     # ここを作成してください
     # ====================
-
-    # 解法1
-    # if np.ndim(B) !=1:
-    #     B = B.reshape(-1)
-    # val = A + B
-
-    # 解法2
-    # if len(B.shape) !=1:
-    #     B = B.reshape(-1)
-    # val = A + B
-
-    # 解法3
-    val = A.reshape(-1) + B.reshape(-1)
+    
+    val = "hoge" #ここも変える
 
     return val
 
