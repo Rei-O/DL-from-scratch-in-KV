@@ -1,14 +1,17 @@
 # 参考: https://watlab-blog.com/2020/02/29/gradient-descent/#1-2
 # 最小値方向と勾配方向が一致しない場合学習が非効率になる例
+import sys, os
+sys.path.append(os.path.join(os.path.join(os.path.dirname(__file__), '..'), '..'))  # 親ディレクトリの親ディレクトリのファイルをインポートするための設定
 
 from pickletools import optimize
 import numpy as np
 from matplotlib import pyplot as plt
 from mpl_toolkits.mplot3d import Axes3D
-from optimizers import SGD
+from optimizers import SGD, Momentum, AdaGrad
+from common.presentation.optimizer import Adam
 
 # 初期値設定
-max_iteration = 100                 # 最大反復回数
+max_iteration = 1000                # 最大反復回数
 x0 = 5.0                            # 初期値x0
 y0 = 5.0                            # 初期値y0
 x_pred = [x0]                       # 描画用x0軌跡リスト(初期値をプリセット)
@@ -31,7 +34,10 @@ params = {}
 params["init"] =  np.array([x0, y0])
 
 # オプティマイザーのインスタンス生成
-optimizer = SGD()
+# optimizer = SGD()
+# optimizer = Momentum()
+optimizer = AdaGrad()
+# optimizer = Adam()
 
 # 最大反復回数まで計算する
 for i in range(max_iteration):
@@ -40,14 +46,14 @@ for i in range(max_iteration):
     optimizer.update(params, grads)
     x_pred.append(params["init"][0])               # x0の軌跡をリストに追加
     y_pred.append(params["init"][1])               # y0の軌跡をリストに追加
-    print(i, params["init"][0], params["init"][1])
+    print(f"{i} (dx, dy)=({grads['init'][0]},{grads['init'][1]}) (x,y)=({params['init'][0]},{params['init'][1]})")
 
 x_pred = np.array(x_pred)           # 描画用にx0をnumpy配列変換
 y_pred = np.array(y_pred)           # 描画用にx0をnumpy配列変換
 z_pred = f(x_pred, y_pred)          # 軌跡のz値を計算
 
 # 基準関数の表示用
-x = np.arange(0, 6, 0.2)
+x = np.arange(-1, 6, 0.2)
 y = np.arange(-5, 5, 0.2)
 X, Y = np.meshgrid(x, y)
 Z = f(X, Y)

@@ -1,3 +1,5 @@
+import numpy as np
+
 class SGD:
     """
     ### SGD class
@@ -6,7 +8,7 @@ class SGD:
     #### ■メソッド
     update : (self, params, grads) -> None
     """
-    def __init__(self, lr=0.9):
+    def __init__(self, lr=0.1):
         self.lr=lr
     
     def update(self, params, grads):
@@ -21,6 +23,26 @@ class Momentum:
     #### ■メソッド
     update : (self, params, grads) -> None
     """
+    def __init__(self, lr=0.1, momentum=0.9):
+        """
+        lr:学習率
+        momentum:速度減衰率（摩擦や空気抵抗に相当）
+        """
+        self.lr = lr
+        self.momentum = momentum
+        self.v = None
+    
+    def update(self, params, grads):
+        
+        if self.v is None:
+            self.v = {}
+            for key, val in params.items():
+                self.v[key] = np.zeros_like(val)
+        
+        for key in params.keys():
+            self.v[key] = self.momentum * self.v[key] - self.lr * grads[key]
+            params[key] += self.v[key]
+
 
 class AdaGrad:
     """
@@ -30,3 +52,16 @@ class AdaGrad:
     #### ■メソッド
     update : (self, params, grads) -> None
     """
+    def __init__(self, lr=0.1):
+        self.lr = lr
+        self.h = None
+    
+    def update(self, params, grads):
+        if self.h is None:
+            self.h = {}
+            for key, val in params.items():
+                self.h[key] = np.zeros_like(val)
+        
+        for key in params.keys():
+            self.h[key] += grads[key] * grads[key]
+            params[key] -= self.lr * grads[key] / (np.sqrt(self.h[key]) + 1e-7) #微小量はゼロ除算回避のため
