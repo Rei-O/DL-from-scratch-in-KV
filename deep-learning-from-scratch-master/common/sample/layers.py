@@ -147,7 +147,8 @@ class BatchNormalization:
             N, D = x.shape
             self.running_mean = np.zeros(D)
             self.running_var = np.zeros(D)
-                        
+
+        # 学習                
         if train_flg:
             mu = x.mean(axis=0)
             xc = x - mu
@@ -161,7 +162,9 @@ class BatchNormalization:
             self.std = std
             self.running_mean = self.momentum * self.running_mean + (1-self.momentum) * mu
             self.running_var = self.momentum * self.running_var + (1-self.momentum) * var            
+        # 予測
         else:
+            # 学習のrunning_mean, running_varを用いて正規化
             xc = x - self.running_mean
             xn = xc / ((np.sqrt(self.running_var + 10e-7)))
             
