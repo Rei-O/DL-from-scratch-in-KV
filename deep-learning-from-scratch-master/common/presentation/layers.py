@@ -120,7 +120,7 @@ class BatchNormalization:
     def __init__(self, gamma, beta, momentum=0.9, running_mean=None, running_var=None):
         self.gamma = gamma
         self.beta = beta
-        self.momentum = momentum
+        self.momentum = momentum  # 学習時のrunning_mean, running_varの更新率
         self.input_shape = None # Conv層の場合は4次元、全結合層の場合は2次元  
 
         # テスト時に使用する平均と分散
