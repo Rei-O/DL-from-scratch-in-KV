@@ -69,6 +69,7 @@ class MultiLayerNet:
 
     def predict(self, x):
         for layer in self.layers.values():
+            print(layer)
             x = layer.forward(x)
 
         return x
@@ -95,7 +96,7 @@ class MultiLayerNet:
         return self.last_layer.forward(y, t) + weight_decay
 
     def accuracy(self, x, t):
-        y = self.predict(x)
+        y = self.predict(x)        
         y = np.argmax(y, axis=1)
         if t.ndim != 1 : t = np.argmax(t, axis=1)
 

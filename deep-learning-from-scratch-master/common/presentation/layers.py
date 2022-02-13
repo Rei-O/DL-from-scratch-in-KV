@@ -104,10 +104,10 @@ class Dropout:
 
     def forward(self, x, train_flg=True):
         if train_flg:
-            self.mask = np.random.rand(*x.shape) > self.dropout_ratio
-            return x * self.mask
+            self.mask = np.random.rand(*x.shape) > self.dropout_ratio  # x ∈ [0,1) > dropout_ratio のTrue/Falseを配列に格納
+            return x * self.mask  # Trueはそのままの値を返却し、Falseのところは0を返却する
         else:
-            return x * (1.0 - self.dropout_ratio)
+            return x * (1.0 - self.dropout_ratio)  # 出力値のスケールを学習時と同じにするため？？
 
     def backward(self, dout):
         return dout * self.mask
