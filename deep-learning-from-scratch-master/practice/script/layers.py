@@ -1,6 +1,6 @@
 import numpy as np
 import abc
-from functions import softmax
+from functions import softmax, crossEntropyError
 
 ############################## Sample ##############################
 
@@ -46,9 +46,7 @@ class LossLayer(metaclass=abc.ABCMeta):
     損失の計算を行うレイヤの抽象クラス
     """
     @abc.abstractmethod
-    def forward(self, X, t
-    
-    ):
+    def forward(self, X, t):
         pass
 
     @abc.abstractmethod
@@ -87,7 +85,6 @@ class Affine(Layer):
         self.X = X.reshape(X.shape[0], -1)  # テンソル対応
         self.X = X
         Z = np.dot(self.X, self.W) + self.b
-
         return Z
 
     def backward(self, dout):
@@ -95,7 +92,6 @@ class Affine(Layer):
         self.db = dout
         dX = np.dot(dout, self.W.T)
         dX = dX.reshape(*self.org_X_shape)  # テンソル対応で形状変更したため元に戻す
-
         return dX
 
 
@@ -119,13 +115,12 @@ class ReLU(Layer):
     def forward(self, X):
         self.mask = (X > 0)
         Z = self.mask * X
-
         return Z
 
     def backward(self, dout):
         dX = self.mask * dout
-
         return dX
+
 
 class Softmax(Layer):
     def __init__(self):
@@ -144,6 +139,48 @@ class Softmax(Layer):
 
     def forward(self, X):
         Z = softmax(X)
+        return Z
+
+    def backward(self, dout):
+        pass
+
+
+class BatchNorm:
+    def __init__(self):
+        """
+        Abstract
+        ---------------
+        BatchNormレイヤのforward, backwardを行う. 
+
+        Params
+        ---------------
+        """
+        # forward
+
+        # backward
+
+    def forward(self, X):
+        pass
+
+    def backward(self, dout):
+        pass
+
+class Dropout:
+    def __init__(self):
+        """
+        Abstract
+        ---------------
+        Dropoutレイヤのforward, backwardを行う. 
+
+        Params
+        ---------------
+        """
+        # forward
+
+        # backward
+
+    def forward(self, X):
+        pass
 
     def backward(self, dout):
         pass
@@ -163,9 +200,9 @@ class Loss(LossLayer):
 
         # backward
 
-    def forward(self, X):
-        pass
+    def forward(self, X, t):
+        return crossEntropyError(X, t)
 
-    def backward(self, dout):
+    def backward(self, dout=1):
         pass
 

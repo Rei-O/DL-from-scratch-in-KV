@@ -25,7 +25,7 @@ def softmax(x):
     # ソフトマックス算出
     return np.exp(x) / np.sum(np.exp(x), axis=-1, keepdims=True)
 
-def clossEntropyError(y, t):
+def crossEntropyError(y, t):
     """
     交差エントロピー関数
 
