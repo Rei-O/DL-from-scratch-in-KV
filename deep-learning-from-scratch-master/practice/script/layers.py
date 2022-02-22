@@ -18,7 +18,7 @@ class Sample:
 
         # backward
 
-    def forward(self, X):
+    def forward(self, X, train_flg=True):
         pass
 
     def backward(self, dout):
@@ -33,7 +33,7 @@ class Layer(metaclass=abc.ABCMeta):
     通常レイヤの抽象クラス
     """
     @abc.abstractmethod
-    def forward(self, X):
+    def forward(self, X, train_flg=True):
         pass
 
     @abc.abstractmethod
@@ -80,7 +80,7 @@ class Affine(Layer):
         self.dW = None
         self.db = None
 
-    def forward(self, X):
+    def forward(self, X, train_flg=True):
         self.org_X_shape = X.shape
         self.X = X.reshape(X.shape[0], -1)  # テンソル対応
         self.X = X
@@ -112,7 +112,7 @@ class ReLU(Layer):
 
         # backward
 
-    def forward(self, X):
+    def forward(self, X, train_flg=True):
         self.mask = (X > 0)
         Z = self.mask * X
         return Z
@@ -134,18 +134,18 @@ class Softmax(Layer):
         """
         # forward
         self.Y = None
+        self.Z = None
 
         # backward
 
-    def forward(self, X):
-        Z = softmax(X)
-        return Z
+    def forward(self, X, train_flg=True):
+        self.Z = softmax(X)
+        return self.Z
 
     def backward(self, dout):
-        pass
+        return dout * self.Z * (1 - self.Z)
 
-
-class BatchNorm:
+class BatchNorm(Layer):
     def __init__(self):
         """
         Abstract
@@ -159,14 +159,14 @@ class BatchNorm:
 
         # backward
 
-    def forward(self, X):
+    def forward(self, X, train_flg=True):
         pass
 
     def backward(self, dout):
         pass
 
-class Dropout:
-    def __init__(self):
+class Dropout(Layer):
+    def __init__(self, dropout_ratio = 0.5):
         """
         Abstract
         ---------------
@@ -174,35 +174,70 @@ class Dropout:
 
         Params
         ---------------
+        dropout_ratio : ドロップアウト率
         """
         # forward
+        self.dropout_ratio = dropout_ratio
+        self.mask = None
 
         # backward
 
-    def forward(self, X):
-        pass
+    def forward(self, X, train_flg=True):
+        if train_flg:
+            self.mask = np.random.rand(*X.shape) > self.dropout_ratio
+            return X * self.mask
+        else:
+            return X * (1.0 - self.dropout_ratio)  # 予測時は全ノードから出力。出力スケールを学習時と合わせるため重みづけ          
 
     def backward(self, dout):
-        pass
+        return dout * self.mask
 
-class Loss(LossLayer):
+class CrossEntropy(LossLayer):
     def __init__(self):
         """
         Abstract
         ---------------
-        Lossレイヤのforward, backwardを行う. 
-        ※現状では交差エントロピー関数のみ対応
+        CrossEntropyレイヤのforward, backwardを行う. 
 
         Params
         ---------------
         """
         # forward
+        self.X = None
+        self.t = None
 
         # backward
 
     def forward(self, X, t):
-        return crossEntropyError(X, t)
+        self.X = X
+        self.t = t
+        return crossEntropyError(self.X, self.t)
 
     def backward(self, dout=1):
-        pass
+        return dout * (- self.t / self.X)
 
+class SoftmaxWithLoss(LossLayer):
+    def __init__(self):
+        """
+        Abstract
+        ---------------
+        SoftmaxWithLossレイヤのforward, backwardを行う. 
+
+        Params
+        ---------------
+        """
+        # forward
+        self.X = None
+        self.t = None
+        self.Z = None
+
+        # backward
+
+    def forward(self, X, t):
+        self.X = X
+        self.t = t
+
+        return crossEntropyError(self.X, self.t)
+
+    def backward(self, dout=1):
+        return dout * (- self.t / self.X)
