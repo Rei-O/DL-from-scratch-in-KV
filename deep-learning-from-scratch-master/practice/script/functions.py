@@ -37,8 +37,8 @@ def crossEntropyError(y, t):
     # 次元1の場合
     if y.ndim == 1:
         # 2次元配列に成形
-        y = y.reshape(1, -1)
-        t = t.reshape(1, -1)
+        y = y.reshape(1, y.size)
+        t = t.reshape(1, t.size)
     
     # 教師データがone-hot表現の場合
     if t.size == y.size:  # 要素数が等しい場合（one-hot表現の場合）
@@ -49,4 +49,4 @@ def crossEntropyError(y, t):
     batchSize = y.shape[0]
 
     # 交差エントロピー算出
-    return -np.sum(np.log(y[np.arange(batchSize), t] + 1e-7)) / batchSize
+    return -np.sum(np.log(y[np.arange(batchSize).astype(int), t.astype(int)] + 1e-7)) / batchSize

@@ -1,10 +1,11 @@
 import sys, os
 sys.path.append(os.path.join(os.path.join(os.path.join(os.path.dirname(__file__), '..'), '..'), '..'))  # 親の親の親ディレクトリのファイルをインポートするための設定
+sys.path.append(os.path.join(os.path.join(os.path.dirname(__file__), '..'), '..'))  # 親の親ディレクトリのファイルをインポートするための設定
 import numpy as np
 
 import common.presentation.debug as debug
 
-debug.isDebugMode = False
+debug.isDebugMode = True
 
 A = np.array([[1,2],[3,4]])
 debug.debugprt(A)
@@ -78,6 +79,9 @@ print_sum(A)
 print_sum(B)
 print_sum(C)
 
+# 合計する軸を指定する
+debug.debugprt(B.sum(axis=0), "B.sum(axis=0)")
+debug.debugprt(B.sum(axis=1), "B.sum(axis=1)")
 
 #==========================================
 # 配列の要素を複数指定する
