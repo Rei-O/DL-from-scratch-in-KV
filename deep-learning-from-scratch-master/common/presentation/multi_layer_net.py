@@ -1,10 +1,11 @@
 # coding: utf-8
 import sys, os
 sys.path.append(os.pardir)  # 親ディレクトリのファイルをインポートするための設定
+sys.path.append(os.path.join(os.path.join(os.path.dirname(__file__), '..'), '..'))  # 親ディレクトリの親ディレクトリのファイルをインポートするための設定
 import numpy as np
 from collections import OrderedDict
-from common.layers import *
-from common.gradient import numerical_gradient
+from common.presentation.layers import *
+from common.presentation.gradient import numerical_gradient
 
 
 class MultiLayerNet:
@@ -69,7 +70,6 @@ class MultiLayerNet:
 
     def predict(self, x):
         for layer in self.layers.values():
-            print(layer)
             x = layer.forward(x)
 
         return x

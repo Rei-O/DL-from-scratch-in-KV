@@ -6,7 +6,7 @@ class SGD:
     #### ■概要
     確率勾配降下法によるパラメータ更新を行うクラス
     #### ■メソッド
-    update : (self, params, grads) -> None
+    update : (params, grads) -> None
     """
     def __init__(self, lr=0.1):
         self.lr=lr
@@ -21,7 +21,7 @@ class Momentum:
     #### ■概要
     モーメンタムによるパラメータ更新を行うクラス
     #### ■メソッド
-    update : (self, params, grads) -> None
+    update : (params, grads) -> None
     """
     def __init__(self, lr=0.1, momentum=0.9):
         """
@@ -50,7 +50,7 @@ class AdaGrad:
     #### ■概要
     AdaGradによるパラメータ更新を行うクラス
     #### ■メソッド
-    update : (self, params, grads) -> None
+    update : (params, grads) -> None
     """
     def __init__(self, lr=0.1):
         self.lr = lr

@@ -1,14 +1,16 @@
-# 参考: https://watlab-blog.com/2020/02/29/gradient-descent/#1-2
-# 最小値方向と勾配方向が一致しない場合学習が非効率になる例
+##################################################################
+# 最小値方向と勾配方向が一致しない場合学習が非効率になる例          # 
+# 参考: https://watlab-blog.com/2020/02/29/gradient-descent/#1-2 #
+##################################################################
+
 import sys, os
-sys.path.append(os.path.join(os.path.join(os.path.dirname(__file__), '..'), '..'))  # 親ディレクトリの親ディレクトリのファイルをインポートするための設定
+sys.path.append(os.path.join(os.path.join(os.path.join(os.path.dirname(__file__), '..'), '..'), '..'))  # 親の親の親ディレクトリのファイルをインポートするための設定
 
 from pickletools import optimize
 import numpy as np
 from matplotlib import pyplot as plt
 from mpl_toolkits.mplot3d import Axes3D
-from optimizers import SGD, Momentum, AdaGrad
-from common.presentation.optimizer import Adam
+from common.presentation.optimizer import SGD, Momentum, AdaGrad, Adam
 
 ##############
 # 初期値設定 #
@@ -41,7 +43,7 @@ optimizer = SGD()
 # optimizer = AdaGrad()
 # optimizer = Adam()
 
-# 最大反復回数まで計算する
+# 最大反復回数まで計算
 for i in range(max_iteration):
     grads = {}                          # 微分値を初期化
     grads["init"] = df(params["init"])  # 現在地点（params）の微分値を格納
@@ -61,24 +63,24 @@ X, Y = np.meshgrid(x, y)
 Z = f(X, Y)
 
 # ここからグラフ描画----------------------------------------------------------------
-# フォントの種類とサイズを設定する。
+# フォントの種類とサイズを設定
 plt.rcParams['font.size'] = 14
 plt.rcParams['font.family'] = 'Times New Roman'
 
-#  グラフの入れ物を用意する。
+#  グラフの入れ物を用意
 fig = plt.figure()
 ax1 = Axes3D(fig)
 
-# 軸のラベルを設定する。
+# 軸のラベルを設定
 ax1.set_xlabel('x')
 ax1.set_ylabel('y')
 ax1.set_zlabel('z')
 
-# データプロットする。
+# データプロット
 ax1.plot_wireframe(X, Y, Z, label='f(x, y)')
 ax1.scatter3D(x_pred, y_pred, z_pred, label='gd', color='red', s=100)
 
-# グラフを表示する。
+# グラフを表示
 plt.show()
 plt.close()
 # ---------------------------------------------------------------------------------
