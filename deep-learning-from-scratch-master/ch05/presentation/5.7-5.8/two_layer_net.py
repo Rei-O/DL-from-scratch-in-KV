@@ -1,8 +1,8 @@
 import sys, os
 sys.path.append(os.pardir)  # 親ディレクトリのファイルをインポートするための設定
 import numpy as np
-from common.layers import * 
-from common.gradient import numerical_gradient
+from common.presentation.layers import * 
+from common.presentation.gradient import numerical_gradient
 from collections import OrderedDict
 
 class TwoLayerNet:

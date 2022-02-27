@@ -1,7 +1,7 @@
 # coding: utf-8
 import numpy as np
-from common.functions import *
-from common.util import im2col, col2im
+from common.presentation.functions import *
+from common.presentation.util import im2col, col2im
 
 
 class Relu:
