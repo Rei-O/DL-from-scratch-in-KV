@@ -1,10 +1,11 @@
 # coding: utf-8
 import sys, os
 sys.path.append(os.pardir)  # 親ディレクトリのファイルをインポートするための設定
+sys.path.append('../../')  # 親の親ディレクトリのファイルをインポートするための設定
 import numpy as np
 from collections import OrderedDict
-from common.layers import *
-from common.gradient import numerical_gradient
+from common.presentation.layers import *
+from common.presentation.gradient import numerical_gradient
 
 
 class MultiLayerNet:

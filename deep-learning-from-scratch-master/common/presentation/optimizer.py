@@ -35,7 +35,8 @@ class Momentum:
 
 class Nesterov:
 
-    """Nesterov's Accelerated Gradient (http://arxiv.org/abs/1212.0901)"""
+    """Nesterov's Accelerated Gradient (http://arxiv.org/abs/1
+    212.0901)"""
 
     def __init__(self, lr=0.01, momentum=0.9):
         self.lr = lr
