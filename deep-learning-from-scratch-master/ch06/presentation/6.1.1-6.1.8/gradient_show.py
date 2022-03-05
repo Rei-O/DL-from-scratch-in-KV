@@ -10,7 +10,7 @@ from pickletools import optimize
 import numpy as np
 from matplotlib import pyplot as plt
 from mpl_toolkits.mplot3d import Axes3D
-from common.presentation.optimizer import SGD, Momentum, AdaGrad, Adam
+from common.presentation.optimizer import SGD, Momentum, AdaGrad, Adam, RMSprop
 
 ##############
 # 初期値設定 #
@@ -42,6 +42,7 @@ optimizer = SGD()
 # optimizer = Momentum()
 # optimizer = AdaGrad()
 # optimizer = Adam()
+# optimizer = RMSprop()
 
 # 最大反復回数まで計算
 for i in range(max_iteration):

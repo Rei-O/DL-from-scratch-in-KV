@@ -1,7 +1,7 @@
 # coding: utf-8
-import sys, os
-sys.path.append(os.path.join(os.path.join(os.path.dirname(__file__), '..'), '..'))  # 親ディレクトリの親ディレクトリのファイルをインポートするための設定
+import sys
 import numpy as np
+sys.path.append('../../')  # 親の親ディレクトリのファイルをインポートするための設定
 from common.presentation.functions import *
 from common.presentation.util import im2col, col2im
 
