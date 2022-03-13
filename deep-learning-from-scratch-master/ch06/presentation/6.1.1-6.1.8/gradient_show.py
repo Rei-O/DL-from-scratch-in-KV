@@ -10,7 +10,7 @@ from pickletools import optimize
 import numpy as np
 from matplotlib import pyplot as plt
 from mpl_toolkits.mplot3d import Axes3D
-from common.presentation.optimizer import SGD, Momentum, AdaGrad, Adam, RMSprop
+from common.presentation.optimizer import SGD, Momentum, AdaGrad, Adam, RMSprop, Nesterov
 
 ##############
 # 初期値設定 #
@@ -40,9 +40,11 @@ params["init"] =  np.array([x0, y0])  # 本当はWやbを渡すが今回は単�
 # オプティマイザーのインスタンス生成
 optimizer = SGD()
 # optimizer = Momentum()
+# optimizer = Nesterov()
 # optimizer = AdaGrad()
-# optimizer = Adam()
 # optimizer = RMSprop()
+# optimizer = Adam()
+
 
 # 最大反復回数まで計算
 for i in range(max_iteration):

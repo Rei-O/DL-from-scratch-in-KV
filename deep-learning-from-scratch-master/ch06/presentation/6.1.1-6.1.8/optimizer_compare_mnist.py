@@ -24,6 +24,7 @@ optimizers['Momentum'] = Momentum()
 optimizers['AdaGrad'] = AdaGrad()
 optimizers['Adam'] = Adam()
 optimizers['RMSprop'] = RMSprop()
+optimizers['Nesterov'] = Nesterov()
 
 networks = {}
 train_loss = {}
@@ -55,7 +56,7 @@ for i in range(max_iterations):
 
 
 # 3.グラフの描画==========
-markers = {"SGD": "o", "Momentum": "x", "AdaGrad": "s", "Adam": "D", "RMSprop": "p"}
+markers = {"SGD": "o", "Momentum": "x", "AdaGrad": "s", "Adam": "D", "RMSprop": "p", "Nesterov": "d"}
 x = np.arange(max_iterations)
 for key in optimizers.keys():
     plt.plot(x, smooth_curve(train_loss[key]), marker=markers[key], markevery=100, label=key)
