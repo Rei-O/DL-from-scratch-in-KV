@@ -38,12 +38,13 @@ params = {}
 params["init"] =  np.array([x0, y0])  # 本当はWやbを渡すが今回は単発実行なのでキーはなんでもOK
 
 # オプティマイザーのインスタンス生成
-# optimizer = SGD()
+optimizer = SGD()
 # optimizer = Momentum()
 # optimizer = Nesterov()
 # optimizer = AdaGrad()
-optimizer = Adam()
 # optimizer = RMSprop()
+# optimizer = Adam()
+
 
 # 最大反復回数まで計算
 for i in range(max_iteration):
