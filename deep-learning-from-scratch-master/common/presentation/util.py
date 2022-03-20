@@ -52,11 +52,11 @@ def im2col(input_data, filter_h, filter_w, stride=1, pad=0):
     col : 2次元配列
     """
     N, C, H, W = input_data.shape
-    out_h = (H + 2*pad - filter_h)//stride + 1
+    out_h = (H + 2*pad - filter_h)//stride + 1   # //は整数の商を返す
     out_w = (W + 2*pad - filter_w)//stride + 1
 
-    img = np.pad(input_data, [(0,0), (0,0), (pad, pad), (pad, pad)], 'constant')
-    col = np.zeros((N, C, filter_h, filter_w, out_h, out_w))
+    img = np.pad(input_data, [(0,0), (0,0), (pad, pad), (pad, pad)], 'constant')  # 各軸でのパディング幅を(befer, after)で指定。バッチサイズ、チャンネル方向にはパディングしないためゼロ固定
+    col = np.zeros((N, C, filter_h, filter_w, out_h, out_w))  #     columnを格納する入れものを生成
 
     for y in range(filter_h):
         y_max = y + stride*out_h

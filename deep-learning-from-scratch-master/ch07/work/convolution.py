@@ -35,12 +35,9 @@ class Convolution:
 
         # インプット、フィルターを2次元配列化
         self.col_X = im2col(X, filter_height, filter_width, stride=self.stride, pad=self.pad)
-        print(self.col_X.shape)
         self.col_W = self.W.reshape(filter_batch_size, -1).T  
-        print(self.col_W.shape)
 
         out = np.dot(self.col_X, self.col_W) + self.b
-        print(out.shape)
         out = out.reshape(output_batch_size, output_height, output_width, -1).transpose(0, 3, 1, 2)  # 指定した順に軸を変更する
 
         return out
@@ -62,20 +59,51 @@ class Convolution:
         return dx
 
 class Pooling:
-    def __init__(self, pool_height, pool_width, stride=1, pad=0):
+    def __init__(self, pool_height, pool_width, stride=2, pad=0):
         # 初期値
         self.pool_height = pool_height
         self.pool_width = pool_width
         self.stride = stride
         self.pad = pad
 
+        # backward時に使用する中間データ
+        self.X = None
+        self.arg_max = None
+
     def forward(self, X):
-        filter_batch_size, filter_channel_num , filter_height, filter_width = self.W.shape
-        output_height = int((input_height - filter_height + self.pad*2)/self.stride + 1)
-        output_width = int((input_width - filter_width + self.pad*2)/self.stride + 1)
+        input_batch_size, input_channel_num, input_height, input_width = X.shape
+        output_height = int((input_height - self.pool_height + self.pad*2)/self.stride + 1)
+        output_width = int((input_width - self.pool_width + self.pad*2)/self.stride + 1)
 
         # 展開
-        
+        col = im2col(X, self.pool_height, self.pool_width, self.stride, self.pad)
+        col = col.reshape(-1, self.pool_height*self.pool_width)
+
+        # 最大値取得
+        out = np.max(col, axis=1)
+
+        # 整形
+        out = out.reshape(input_batch_size, output_height, output_width, input_channel_num).transpose(0, 3, 1, 2)
+
+        # 中間データを格納
+        self.X = X
+        self.arg_max = np.argmax(col, axis=1)
+
+        return out
+    
+    def backward(self, dout):
+        # MAXプーリングの場合、ReLUのようにMAXの要素だけ1、それ以外は0を返す
+        dout = dout.transpose(0, 2, 3, 1)  #バッチサイズ, height, width, channel数の順に変換
+
+        pool_size = self.pool_height * self.pool_width  # プーリングフィルターの要素数
+        dmax = np.zeros((dout.size, pool_size))  # doutの要素数×プーリングフィルターの要素数のゼロ配列を生成(返り値を入れておく受け皿)
+        dmax[np.arange(self.arg_max.size), self.arg_max.flatten()] = dout.flatten()  # 各ウィンドウでのmaxの要素に後層からの連携値を渡す
+        dmax = dmax.reshape(dout.shape + (pool_size, ))  # タプル同士の結合で5次元にreshape
+
+        dcol = dmax.reshape(dmax.shape[0] * dmax.shape[1] * dmax.shape[2], -1)  # バッチサイズ×height×width, channel数×プーリングサイズに変換（←これがim2colの出力結果、上の変換は徐々にこの形に近づけるため？？）
+        dx = col2im(dcol, self.X.shape, self.pool_height, self.pool_width, self.stride, self.pad)
+
+        return dx
 
 if __name__ == '__main__':
     #################
@@ -113,3 +141,7 @@ if __name__ == '__main__':
     # forward
     out = convLayer.forward(x3)
     print(out.shape)
+
+    # backward
+    dx = convLayer.backward(out)  # ホントは微分値を渡すので違うが、、
+    print(dx.shape)
