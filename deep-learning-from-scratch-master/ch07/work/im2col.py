@@ -14,14 +14,23 @@ print(x.shape)  # batch_size:3, channel:2, height:2, width:2
 print(x)
 
 # im2col
-col_x = im2col(x, 2, 2, stride=2, pad=0)
+col_x = im2col(x, 2, 2, stride=1, pad=0)
 print(col_x.shape)
 print(col_x)
 
-# col2im
-im_x = col2im(col_x, x.shape, 2, 2, stride=1, pad=0)
-print(im_x.shape)
-print(im_x) # 2倍とか4倍になっているのはなんでだろうか
 
-l = [0, 10, 20, 30, 40, 50, 60, 70, 80, 90]
-print(l[1:6])
+####################### ここから下は動きません　##################
+
+# # col2im
+# batch_size = 2
+# output_size = 4  # (in:3 + 2*pad:0 - filter:2)/stride:1 + 1 = 2　が高さ×幅
+# channel_num = 2
+# filter_size = 4
+
+# col_x_trns = col_x.transpose(1, 0).reshape(batch_size, output_size , channel_num, filter_size).transpose(0, 2, 3, 1)  #(batch, channel, output_height, output_width)に変換
+# im_x = col2im(col_x_trns, col_x_trns.shape, 2, 2, stride=1, pad=0)
+# print(im_x.shape)
+# print(im_x) # 2倍とか4倍になっているのはなんでだろうか
+
+# l = [0, 10, 20, 30, 40, 50, 60, 70, 80, 90]
+# print(l[1:6])
