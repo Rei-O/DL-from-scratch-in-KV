@@ -2,8 +2,8 @@
 import sys
 import numpy as np
 sys.path.append('../../')  # 親の親ディレクトリのファイルをインポートするための設定
-from common.functions import *
-from common.util import im2col, col2im
+from common.presentation.functions import *
+from common.presentation.util import im2col, col2im
 
 
 class Relu:
