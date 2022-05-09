@@ -28,6 +28,6 @@ model.compile(optimizer='adam', loss='categorical_crossentropy', metrics=['accur
 # ネットワーク各層の出力内容を確認する
 model.summary()
 # モデルをトレーニングする
-# model.fit(training_images, training_labels, epochs=5)
+model.fit(training_images, training_labels, epochs=5)
 # テストデータで精度を確認する
-# test_loss = model.evaluate(test_images, test_labels)
+test_loss = model.evaluate(test_images, test_labels)
