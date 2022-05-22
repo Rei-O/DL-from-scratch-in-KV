@@ -206,7 +206,9 @@ class Conv2D(AbstractLayer):
         self.filter_num = filter_num
         self.filter_size =  (filter_size, filter_size) if type(filter_size) is int else filter_size
         self.filter_height = self.filter_size[0]
-        self.filter_width = self.filter_size[1]        
+        self.filter_width = self.filter_size[1]
+        self.output_height = None
+        self.output_width = None        
 
         # レイヤ個別の初期化
         # パラメータ
@@ -263,7 +265,7 @@ class Conv2D(AbstractLayer):
         elif self.activation_key.lower() is 'sigmoid' :
             scale = np.sqrt(1.0 / input_units)
 
-        model.params['W' + str(idx)] =  np.random.normal(loc=0.0, scale=scale, size=[output_units[0], input_units[0], output_units[1], output_units[2]])
+        model.params['W' + str(idx)] =  np.random.normal(loc=0.0, scale=scale, size=[self.filter_num, input_units[0], self.filter_height, self.filter_width])
         model.params['b' + str(idx)] =  np.zeros(output_units[0])
 
         self.W = model.params['W' + str(idx)]
@@ -276,8 +278,10 @@ class MaxPooling2D(AbstractLayer):
         self.filter_size =  (filter_size, filter_size) if type(filter_size) is int else filter_size
         self.pool_height = self.filter_size[0]
         self.pool_width = self.filter_size[1]
+        self.output_height = None
+        self.output_width = None
         self.stride = stride
-        self.pad = pad
+        self.pad = pad  # パディング未実装
 
         self.x = None
         self.arg_max = None
@@ -286,12 +290,35 @@ class MaxPooling2D(AbstractLayer):
         return super().forward(x, self.__forward, self.activation, train_flg)
 
     def __forward(self, x, train_flg=None):
-        pass
+        col = im2col(x, self.pool_height, self.pool_width, self.stride, self.pad)
+        col = col.reshape(-1, self.pool_height*self.pool_width)
+
+        arg_max = np.argmax(col, axis=1)
+        out = np.max(col, axis=1)
+        out = out.reshape(x.shape[0], self.output_height, self.output_width, x.shape[1]).transpose(0, 3, 1, 2)
+
+        self.x = x
+        self.arg_max = arg_max
+
+        return out
 
     def backward(self, dout):
         return super().backward(dout, self.__backward, self.activation)
 
     def __backward(self, dout):
+        dout = dout.transpose(0, 2, 3, 1)
+
+        pool_size = self.pool_height * self.pool_width
+        dmax = np.zeros((dout.size, pool_size))
+        dmax[np.arange(self.arg_max.size), self.arg_max.flatten()] = dout.flatten()
+        dmax = dmax.reshape(dout.shape + (pool_size,))
+
+        dcol = dmax.reshape(dmax.shape[0] * dmax.shape[1] * dmax.shape[2], -1)
+        dx = col2im(dcol, self.x.shape, self.pool_height, self.pool_width, self.stride, self.pad)
+
+        return dx
+
+    def compile(self, model, batch_size, input_units, output_units, idx):
         pass
 
 class Categorical_crossEntropy(AbstractWithLossLayer):

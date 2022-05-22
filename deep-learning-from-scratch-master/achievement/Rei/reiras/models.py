@@ -113,6 +113,11 @@ class NuralNet(AbstractModel):
             layer.output_height = int(1 + (self.input_layer_size_list[-1][1] + 2*layer.pad - layer.filter_size[0]) / layer.stride)
             layer.output_width = int(1 + (self.input_layer_size_list[-1][2] + 2*layer.pad - layer.filter_size[1]) / layer.stride)
             __output_units = (layer.filter_num, layer.output_height, layer.output_width)
+        # MaxPooling2Dの場合
+        elif type(layer) is MaxPooling2D:
+            layer.output_height = int(1 + (self.input_layer_size_list[-1][1] - layer.pool_height) / layer.stride)
+            layer.output_width = int(1 + (self.input_layer_size_list[-1][2] - layer.pool_width) / layer.stride)
+            __output_units = (self.input_layer_size_list[-1][0], layer.output_height, layer.output_width)
         else:
             __output_units = layer.output_units
 
