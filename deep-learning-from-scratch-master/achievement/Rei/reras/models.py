@@ -3,9 +3,9 @@ sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
 import numpy as np
 import abc
 from collections import OrderedDict
-from reiras.optimizers import *
-from reiras.layers import *
-from reiras.metrics import *
+from reras.optimizers import *
+from reras.layers import *
+from reras.metrics import *
 
 ########################### Abstract Class ###########################
 

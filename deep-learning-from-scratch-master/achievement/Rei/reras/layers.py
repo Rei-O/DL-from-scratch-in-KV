@@ -4,8 +4,8 @@ from turtle import forward
 sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
 import numpy as np
 from abc import ABC, abstractmethod
-from reiras.functions import *
-from reiras.utils import *
+from reras.functions import *
+from reras.utils import *
 
 ########################### Abstract Class ###########################
 
@@ -44,7 +44,7 @@ class AbstractLayer(ABC):
     def backward(self, dout, backward, activation):
         dy = activation.backward(dout)
 
-        return backward(dout)
+        return backward(dy)
 
     @abstractmethod
     def compile(self):
@@ -129,19 +129,6 @@ class Dense(AbstractLayer):
         # gradientを保持する変数
         self.dW = None
         self.db = None
-    
-    def compile(self, model, batch_size, input_units, output_units, idx):
-        scale = 1.0
-        if self.activation_key.lower() is 'relu' :
-            scale = np.sqrt(2.0 / input_units)
-        elif self.activation_key.lower() is 'sigmoid' :
-            scale = np.sqrt(1.0 / input_units)
-
-        model.params['W' + str(idx)] =  np.random.normal(loc=0.0, scale=scale, size=[input_units[0], output_units[0]])
-        model.params['b' + str(idx)] =  np.zeros(output_units[0])
-
-        self.W = model.params['W' + str(idx)]
-        self.b = model.params['b' + str(idx)]
 
     def forward(self, x, train_flg=None):
         return super().forward(x, self.__forward, self.activation, train_flg)
@@ -162,6 +149,19 @@ class Dense(AbstractLayer):
         dx = np.dot(dout, self.W.T)
 
         return dx
+    
+    def compile(self, model, batch_size, input_units, output_units, idx):
+        scale = 1.0
+        if self.activation_key.lower() is 'relu' :
+            scale = np.sqrt(2.0 / input_units)
+        elif self.activation_key.lower() is 'sigmoid' :
+            scale = np.sqrt(1.0 / input_units)
+
+        model.params['W' + str(idx)] =  np.random.normal(loc=0.0, scale=scale, size=[input_units[0], output_units[0]])
+        model.params['b' + str(idx)] =  np.zeros(output_units[0])
+
+        self.W = model.params['W' + str(idx)]
+        self.b = model.params['b' + str(idx)]
 
 
 class Flatten(AbstractLayer):
