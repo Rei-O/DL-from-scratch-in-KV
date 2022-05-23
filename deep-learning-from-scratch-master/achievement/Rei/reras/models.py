@@ -97,38 +97,28 @@ class NuralNet(AbstractModel):
         # レイヤを格納
         self.layersOrderDict[type(layer).__name__ + '_' + str(len(self.layersOrderDict))] = layer
         
-        # インプットサイズを格納
-        __input_units = self.output_layer_size_list[-1] if layer.input_units[0] is None else layer.input_units
-        self.input_layer_size_list.append(__input_units)
-
-        # アウトプットサイズを格納
-        __output_units = 1
-        #　Flattenの場合
-        if type(layer) is Flatten :
-            # 平坦化後のoutput_unitsに更新
-            for size in self.output_layer_size_list[-1]:
-                __output_units *= size
-        # Conv2Dの場合
-        elif type(layer) is Conv2D:
-            layer.output_height = int(1 + (self.input_layer_size_list[-1][1] + 2*layer.pad - layer.filter_size[0]) / layer.stride)
-            layer.output_width = int(1 + (self.input_layer_size_list[-1][2] + 2*layer.pad - layer.filter_size[1]) / layer.stride)
-            __output_units = (layer.filter_num, layer.output_height, layer.output_width)
-        # MaxPooling2Dの場合
-        elif type(layer) is MaxPooling2D:
-            layer.output_height = int(1 + (self.input_layer_size_list[-1][1] - layer.pool_height) / layer.stride)
-            layer.output_width = int(1 + (self.input_layer_size_list[-1][2] - layer.pool_width) / layer.stride)
-            __output_units = (self.input_layer_size_list[-1][0], layer.output_height, layer.output_width)
-        else:
-            __output_units = layer.output_units
-
-        self.output_layer_size_list.append(__output_units if type(__output_units) is tuple else (__output_units,))
 
     # TODO : Step3実装予定
     def summary(self):
         """
         レイヤ構成を表示する
         """
-        pass
+        __layer_print_length = 40
+        __input_print_length = 40
+        __output_print_length = 40
+        __param_print_length = 10
+        __line_print_length = __layer_print_length + __input_print_length + __output_print_length + __param_print_length
+
+        print('='*__line_print_length)
+        print('Layer' + ' ' * (__line_print_length-5))
+        print('='*__line_print_length)
+        idx = 0
+        for key, layer in self.layersOrderDict.items():
+            __str_layer = key  + ' '*max(0, len(key) - __line_print_length)
+            print(__str_layer)
+            print('-'*__line_print_length)
+            idx += 1            
+
 
     def compile(self, optimizer, loss, metrics, output_units, batch_size=1, **optimizer_param):
         """
@@ -154,6 +144,10 @@ class NuralNet(AbstractModel):
         # score関数定義
         self.metrics = metric_class_dict[metrics.lower()]
 
+        # 各層の重み形状を算出
+        for layer in self.layersOrderDict.values():
+            self.__setLayerSize(layer)
+
         # 出力層のノード数を格納
         self.output_units = output_units if type(output_units) is tuple else (output_units,)
         # 出力層のインプットサイズを格納
@@ -169,7 +163,33 @@ class NuralNet(AbstractModel):
         for layer in self.layersOrderDict.values():
             layer.compile(self, self.batch_size, self.input_layer_size_list[idx], self.output_layer_size_list[idx], idx)
             idx += 1
-            
+
+    def __setLayerSize(self, layer):    
+        # インプットサイズを格納
+        __input_units = self.output_layer_size_list[-1] if layer.input_units[0] is None else layer.input_units
+        self.input_layer_size_list.append(__input_units)
+
+        # アウトプットサイズを格納
+        __output_units = 1
+        #　Flattenの場合
+        if type(layer) is Flatten :
+            # 平坦化後のoutput_unitsに更新
+            for size in self.output_layer_size_list[-1]:
+                __output_units *= size
+        # Conv2Dの場合
+        elif type(layer) is Conv2D:
+            layer.output_height = int(1 + (self.input_layer_size_list[-1][1] + 2*layer.pad - layer.filter_size[0]) / layer.stride)
+            layer.output_width = int(1 + (self.input_layer_size_list[-1][2] + 2*layer.pad - layer.filter_size[1]) / layer.stride)
+            __output_units = (layer.filter_num, layer.output_height, layer.output_width)
+        # MaxPooling2Dの場合
+        elif type(layer) is MaxPooling2D:
+            layer.output_height = int(1 + (self.input_layer_size_list[-1][1] - layer.pool_height) / layer.stride)
+            layer.output_width = int(1 + (self.input_layer_size_list[-1][2] - layer.pool_width) / layer.stride)
+            __output_units = (self.input_layer_size_list[-1][0], layer.output_height, layer.output_width)
+        else:
+            __output_units = layer.output_units
+
+        self.output_layer_size_list.append(__output_units if type(__output_units) is tuple else (__output_units,))
 
     def fit(self, x_train, x_test, t_train, t_test, epochs=10):
         """
