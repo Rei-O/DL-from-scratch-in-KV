@@ -102,20 +102,31 @@ class NuralNet(AbstractModel):
     def summary(self):
         """
         レイヤ構成を表示する
+        Params
+        ---------------
+        None
+
+        Return
+        ---------------
+        None
         """
         __layer_print_length = 40
         __input_print_length = 40
         __output_print_length = 40
-        __param_print_length = 10
-        __line_print_length = __layer_print_length + __input_print_length + __output_print_length + __param_print_length
+        __line_print_length = __layer_print_length + __input_print_length + __output_print_length
+        # __param_print_length = 10
+        # __line_print_length = __layer_print_length + __input_print_length + __output_print_length + __param_print_length
 
         print('='*__line_print_length)
-        print('Layer' + ' ' * (__line_print_length-5))
+        print('Layer'.ljust(__layer_print_length) + 'Input'.ljust(__input_print_length) + 'Output'.ljust(__output_print_length))
+        # print('Layer'.ljust(__layer_print_length) + 'Input'.ljust(__input_print_length) + 'Output'.ljust(__output_print_length) + 'Param'.ljust(__param_print_length))
         print('='*__line_print_length)
         idx = 0
         for key, layer in self.layersOrderDict.items():
-            __str_layer = key  + ' '*max(0, len(key) - __line_print_length)
-            print(__str_layer)
+            __str = str(key).ljust(__layer_print_length)
+            __str += str((self.batch_size,) + self.input_layer_size_list[idx]).ljust(__input_print_length)
+            __str += str((self.batch_size,) + self.output_layer_size_list[idx]).ljust(__output_print_length)
+            print(__str)
             print('-'*__line_print_length)
             idx += 1            
 

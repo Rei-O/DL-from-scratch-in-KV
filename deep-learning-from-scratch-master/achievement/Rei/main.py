@@ -32,6 +32,9 @@ model.add(Dense(output_units=10, activation='identify'))
 model.compile(optimizer='adam', loss='categorical_crossentropy' \
     , metrics='accuracy', output_units=10, batch_size=128)
 
+# レイヤ構成を表示
+model.summary()
+
 # モデルをトレーニングする
 model.fit(x_train=x_train, x_test=x_test, t_train=t_train, t_test=t_test, epochs=5)
 

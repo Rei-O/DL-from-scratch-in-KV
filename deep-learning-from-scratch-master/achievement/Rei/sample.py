@@ -32,6 +32,9 @@ model.add(Dense(10, activation='softmax'))
 model.compile(optimizer='adam', loss='categorical_crossentropy' \
     , metrics=['accuracy'])
 
+# モデルを表示する
+model.summary()
+
 # モデルをトレーニングする
 model.fit(training_images, training_labels, epochs=5)
 
