@@ -252,12 +252,12 @@ class NuralNet(AbstractModel):
 
             # 1エポック開始時の場合
             if i % self.iter_per_epoch == 0:
-                print(f'=========== epoch : {int(i/self.iter_per_epoch)} ===========')
                 train_evalute = self.evalute(self.x_train, self.t_train)
                 self.train_evalute_list.append(train_evalute)
-                print(f'train score : {train_evalute}')
                 test_evalute = self.evalute(x_test, t_test)
                 self.test_evalute_list.append(test_evalute)
+                print(f'=========== epoch : {int(i/self.iter_per_epoch)} ===========')
+                print(f'train score : {train_evalute}')
                 print(f'test score : {test_evalute}')
 
     def __gradient(self, x, t):
@@ -326,9 +326,9 @@ class NuralNet(AbstractModel):
             __t_batch = t[i*self.batch_size:(i+1)*self.batch_size]
 
             y = self.__predict(__x_batch, None, train_flg=False)
-            score += self.metrics(y, __t_batch)
+            score += self.metrics(y, __t_batch) * self.batch_size
 
-        return score
+        return score / x.shape[0]
 
     def __predict(self, x, t, train_flg=True):
         """
